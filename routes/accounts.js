@@ -9,7 +9,7 @@ router.route('/')
 
 // POST: Creat a new account
 router.route('/')
-    .get(accountsController.createAccount);
+    .post(accountsController.createAccount);
 
 router.put('/:id', accountsController.updateAccount);
 router.delete('/:id', accountsController.deleteAccount);

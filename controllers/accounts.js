@@ -3,7 +3,7 @@ const ObjectId  = require('mongodb').ObjectId;
 
 // GET: Retrieve all accounts
 const getAll = async (req, res) => {
-    //#swagger.tags=['Contacts']
+    //#swagger.tags=['Accounts']
     try {
         const result = await mongodb.getDatabase().db().collection('accounts').find();
         const accounts = await result.toArray();
@@ -20,78 +20,52 @@ const getAll = async (req, res) => {
 
 // POST: Crete a new account
 const createAccount = async (req, res) => {
-    //#swagger.tags=['Contacts']
-    const { name, email, accountType, initialDeposit } = req.body;
-
-    if (!name || !email || !accountType || initialDeposit == null) {
-        return res.status(400).json({ message: "All fields are required (name, email, accountType, initialDeposit)." });
-    }
-
-    if (initialDeposit < 0) {
-        return res.status(400).json({ message: "Initial deposit cannot be negative." });
-    }
-
-    try {
-        const newAccount = { name, email, accountType, balance: initialDeposit, createdAt: new Date() };
-        const response = await mongodb.getDatabase().collection('accounts').insertOne(newAccount);
-
-        res.status(201).json({ id: response.insertedId });
-    } catch (error) {
-        res.status(500).json({ message: "Error creating account", error: error.message });
+    //#swagger.tags=['Accounts']
+    const accounttId = new ObjectId(req.params.id);
+    const account = {
+        name: req.body.name,
+        email: req.body.email,
+        accountType: req.body.accountType,
+        initialDeposit: req.body.initialDeposit
+    };
+    const response = await mongodb.getDatabase().db().collection('accounts').insertOne(account);
+    if (response.acknowledged > 0) {
+        res.status(204).send();
+    }   else {
+        res.status(500).json(response.error || 'Error creating account');
     }
 };
 
 // PUT: Update account details
 const updateAccount = async (req, res) => {
-    //#swagger.tags=['Contacts']
-    const { id } = req.params;
-    const { name, email, accountType, balance } = req.body;
-
-    if (!ObjectId.isValid(id)) {
-        return res.status(400).json({ message: "Invalid account ID" });
-    }
-
-    if (!name || !email || !accountType || balance == null) {
-        return res.status(400).json({ message: "All fields are required." });
-    }
-
-    try {
-        const updatedAccount = { name, email, accountType, balance };
-        const response = await mongodb.getDatabase().collection('accounts').updateOne(
-            { _id: new ObjectId(id) },
-            { $set: updatedAccount }
-        );
-
-        if (response.matchedCount === 0) {
-            return res.status(404).json({ message: "Account not found." });
-        }
-
-        res.status(200).json({ message: "Account updated successfully." });
-    } catch (error) {
-        res.status(500).json({ message: "Error updating account", error: error.message });
+    //#swagger.tags=['Accounts']
+    const accountId = new ObjectId(req.params.id);
+    const account = {
+        name: req.body.name,
+        email: req.body.email,
+        accountType: req.body.accountType,
+        initialDeposit: req.body.initialDeposit
+    };
+    const response = await mongodb.getDatabase().db().collection('accounts').replaceOne({_id: accountId }, account);
+    if (response.modifiedCount > 0) {
+        res.status(204).send({ message: "Account updated successfully." });
+    }   else {
+        res.status(500).json(response.error || 'An error is occured while updating the account.');
     }
 };
 
 // DELETE: Remove an account
 const deleteAccount = async (req, res) => {
-    //#swagger.tags=['Contacts']
-    const { id } = req.params;
-
-    if (!ObjectId.isValid(id)) {
-        return res.status(400).json({ message: "Invalid account ID" });
+    //#swagger.tags=['Accounts']
+    const accountId = new ObjectId(req.params.id);
+    const response = await mongodb.getDatabase().db().collection('accounts').deleteOne({_id: accountId });
+    if (response.deletedCount > 0) {
+        res.status(204).send({ message: "Account deleted successfully." });
+    }   else {
+        res.status(500).json(response.error || 'An error is occured while deleting the contact.');
     }
 
-    try {
-        const response = await mongodb.getDatabase().collection('accounts').deleteOne({ _id: new ObjectId(id) });
-
-        if (response.deletedCount === 0) {
-            return res.status(404).json({ message: "Account not found." });
-        }
-
-        res.status(200).json({ message: "Account deleted successfully." });
-    } catch (error) {
-        res.status(500).json({ message: "Error deleting account", error: error.message });
-    }
+     
 };
 
 
