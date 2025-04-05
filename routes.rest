@@ -7,22 +7,22 @@ POST http://localhost:3002/accounts HTTP/1.1
 Content-Type: application/json
 
 {
-    "name": "Dorestan Junior",
-    "email": "dorestan@gmail.com",
+    "name": "Raphter Joly",
+    "email": "raphter@gmail.com",
     "accountType": "Saving",
-    "initialDeposit": "500"
+    "initialDeposit": "850"
 }
 
 ### PUT account
-PUT http://localhost:3002/accounts/67e5f05b891412a5dc0cee95 HTTP/1.1
+PUT http://localhost:3002/accounts/67def067ff105bb82af9e0f2 HTTP/1.1
 Content-Type: application/json
 
 {
-    "name": "Dorestan Junior",
-    "email": "dorestan@gmail.com",
+    "name": "Dave Colas",
+    "email": "dave@gmail.com",
     "accountType": "Saving",
-    "initialDeposit": "1750"
+    "initialDeposit": "1200"
 }
 
 ### Delete account
-DELETE http://localhost:3002/accounts/67e5e91ab8e94223aeb8d0a9 HTTP/1.1
+DELETE http://localhost:3002/accounts/67def067ff105bb82af9e0f2 HTTP/1.1
