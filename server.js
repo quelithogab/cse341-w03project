@@ -56,7 +56,9 @@ app.get('/', (req, res) => { res.send(req.session.user !== undefined ? `Logged i
 app.get('/github/callback', passport.authenticate('github', {
   failureRedirect: '/api-docs', session: false}),
   (req, res) => {
+    console.log('Logged-in:', req.user);
     req.session.user = req.user;
+    console.log('Session after login:', req.session);
     res.redirect('/');
 });
 
